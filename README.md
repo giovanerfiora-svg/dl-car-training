@@ -1,5 +1,10 @@
 # 🏎️ DRL Autonomous Car Lab (DQN)
 
+![Python](https://img.shields.io/badge/python-3.14-blue.svg)
+![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=flat&logo=pytorch&logoColor=white)
+![Pygame](https://img.shields.io/badge/Pygame--CE-green.svg)
+![License](https://img.shields.io/badge/license-MIT-informational.svg)
+
 Projeto de Aprendizado por Reforço Profundo (Deep Reinforcement Learning) em Python onde um agente inteligente aprende a pilotar um veículo autônomo em um simulador 2D usando um algoritmo **Deep Q-Network (DQN)**.
 
 ## 🚀 Tecnologias Utilizadas
