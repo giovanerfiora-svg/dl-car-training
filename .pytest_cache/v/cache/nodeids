@@ -1,0 +1,7 @@
+[
+  "tests/test_agent.py::test_agent_action_selection",
+  "tests/test_agent.py::test_agent_update_step",
+  "tests/test_checkpoint.py::test_checkpoint_save_and_load",
+  "tests/test_environment.py::test_env_initialization",
+  "tests/test_environment.py::test_env_step_collision"
+]

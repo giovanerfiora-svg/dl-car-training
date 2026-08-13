@@ -1,0 +1,41 @@
+project:
+  name: "drl-autonomous-car"
+  seed: 42
+
+environment:
+  track_name: "circuit_basic"
+  max_steps: 1000
+  num_lidar_rays: 7
+  lidar_max_dist: 200.0
+  car_max_speed: 10.0
+  car_acceleration: 0.2
+  car_steering_speed: 4.0
+
+agent:
+  gamma: 0.99
+  learning_rate: 0.0005
+  batch_size: 64
+  buffer_capacity: 100000
+  target_update_freq: 1000
+  train_start_size: 1000
+  hidden_dim: 128
+
+  # Epsilon ajustado para NAO jogar fora o conhecimento prévio
+  epsilon_start: 0.2       # <-- Começa explorando apenas 20% das vezes
+  epsilon_end: 0.02
+  epsilon_decay_steps: 50000
+
+training:
+  total_timesteps: 1500000
+  log_freq_episodes: 10
+  eval_freq_steps: 5000
+  checkpoint_freq_steps: 10000
+  save_dir: "models"       # <-- Aponta para a pasta existente com o latest.pt
+  log_dir: "runs"
+
+reward_weights:
+  progress: 1.0
+  speed_bonus: 0.1
+  out_of_bounds_penalty: -100.00
+  collision_penalty: -100.00
+  idle_penalty: -0.1
