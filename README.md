@@ -1,30 +1,92 @@
-# 🏎️ DRL Autonomous Car Lab (DQN)
+# 🏎️ DRL Autonomous Car Lab (Dueling Double DQN)
 
-Projeto de **Deep Reinforcement Learning** em Python no qual um agente aprende a dirigir um carro em um circuito 2D. O projeto usa **DQN (Deep Q-Network)** e foi organizado para facilitar experimentação, observação das métricas e evolução do agente.
+Projeto de **Deep Reinforcement Learning** em Python no qual um agente aprende a dirigir um carro em um circuito 2D.
 
-## 🧠 O que o agente aprende
+## 🧠 Agente
 
-O agente recebe um vetor de observações formado por:
+O agente observa:
 
-- 7 sensores LiDAR de proximidade;
+- 7 sensores LiDAR;
 - velocidade normalizada;
-- posição relativa do próximo checkpoint.
+- posição relativa do checkpoint.
 
-Ele escolhe entre 5 ações discretas: **manter, acelerar, frear, esquerda e direita**.
+Ele escolhe entre 5 ações discretas: manter, acelerar, frear, esquerda e direita.
 
-A recompensa combina progresso no circuito, velocidade, penalidade por ficar parado e penalidade por colisão.
+A implementação combina **Double DQN + Dueling DQN + Huber Loss**.
 
-## 🔬 Algoritmo
+### Dueling DQN
 
-A implementação utiliza:
+A rede compartilhada gera duas estimativas:
 
-- **PyTorch** para as redes neurais;
-- **Replay Buffer** para reutilizar experiências;
-- **Target Network** para estabilizar os alvos de treinamento;
-- **Double DQN** para reduzir a superestimação dos valores Q;
-- **Huber Loss (SmoothL1Loss)** para tornar o treinamento menos sensível a erros grandes;
-- **Gradient Clipping** para evitar atualizações exageradas;
-- **Epsilon-Greedy** para equilibrar exploração e aproveitamento.
+- `V(s)`: quão bom é o estado atual;
+- `A(s,a)`: quão boa é cada ação naquele estado.
+
+Depois combinamos as duas:
+
+```text
+Q(s,a) = V(s) + A(s,a) - mean(A(s,*))
+```
+
+Isso ajuda o agente a aprender situações em que várias ações têm valor parecido, separando o valor do estado da vantagem de escolher uma ação específica.
+
+## 📊 Métricas de treinamento
+
+O TensorBoard registra, por passo:
+
+- `Train/Loss`
+- `Train/Epsilon`
+- `Train/ReplayBufferSize`
+- `Train/LearningRate`
+- `Train/GradientNorm`
+
+E, por episódio:
+
+- recompensa;
+- recompensa média dos últimos 50 episódios;
+- quantidade de passos;
+- velocidade média;
+- checkpoints alcançados;
+- colisões;
+- loss médio;
+- taxa de conclusão do episódio.
+
+## 📈 TensorBoard
+
+```bash
+tensorboard --logdir runs
+```
+
+A ideia é acompanhar não apenas se a recompensa sobe, mas também **como** o agente está aprendendo: se o loss estabiliza, se a exploração diminui, se o buffer cresce e se colisões diminuem.
+
+## 🧪 Avaliação
+
+A avaliação ocorre separadamente do treinamento usando política gulosa:
+
+```bash
+python evaluation.py --model models/best.pt --episodes 20
+```
+
+O avaliador calcula recompensa média, desvio padrão, melhor recompensa, passos médios, checkpoints, taxa de colisão e velocidade média.
+
+## 🚀 Executar
+
+Instale as dependências:
+
+```bash
+pip install -r requirements.txt
+```
+
+Treine:
+
+```bash
+python train.py
+```
+
+Visualize:
+
+```bash
+python play.py
+```
 
 ## 📁 Estrutura
 
@@ -40,52 +102,23 @@ A implementação utiliza:
 │   ├── car.py
 │   ├── track.py
 │   └── vehicle_env.py
-├── models/
 ├── training/
 │   ├── checkpoint.py
 │   └── trainer.py
+├── evaluation.py
 ├── evaluate.py
 ├── play.py
 └── train.py
 ```
 
-## 🚀 Instalação
+## 🔬 Próximas evoluções
 
-```bash
-pip install torch pygame-ce gymnasium tensorboard matplotlib pytest pyyaml tqdm
-```
-
-## ▶️ Treinamento
-
-```bash
-python train.py
-```
-
-O treinador retoma automaticamente o `models/latest.pt` quando existe um checkpoint compatível.
-
-## 🎮 Avaliação
-
-Para executar o agente treinado:
-
-```bash
-python play.py
-```
-
-Para acompanhar métricas do treinamento:
-
-```bash
-tensorboard --logdir runs
-```
-
-## 🧪 Próximas evoluções
-
-- testes automatizados do ambiente e do agente;
-- avaliação quantitativa em episódios separados do treinamento;
-- comparação entre DQN e Double DQN;
-- priorização de experiências no replay buffer;
-- exploração de **Dueling DQN**;
-- melhoria progressiva da função de recompensa;
-- gráficos de recompensa média, colisões e checkpoints por episódio.
+- testes automatizados;
+- comparação experimental DQN vs. Double DQN vs. Dueling Double DQN;
+- Prioritized Experience Replay;
+- avaliação em circuitos diferentes;
+- gráficos automáticos de desempenho;
+- estudo do impacto de diferentes funções de recompensa.
 
 ## 📄 Licença
 
