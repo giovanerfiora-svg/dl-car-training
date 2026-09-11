@@ -26,6 +26,26 @@ A implementação utiliza:
 - **Gradient Clipping** para evitar atualizações exageradas;
 - **Epsilon-Greedy** para equilibrar exploração e aproveitamento.
 
+## 📊 Avaliação quantitativa
+
+O projeto possui um avaliador separado do treinamento. Ele executa episódios usando a política gulosa (`epsilon=0`) e calcula:
+
+- recompensa média e desvio padrão;
+- melhor recompensa;
+- passos médios por episódio;
+- checkpoints médios e máximos;
+- taxa de colisão;
+- velocidade média;
+- quantidade de passos de treinamento presentes no checkpoint.
+
+Execute:
+
+```bash
+python evaluation.py --model models/best.pt --episodes 20
+```
+
+O resultado também é salvo em `evaluation_results.json`, facilitando comparações entre versões do agente.
+
 ## 📁 Estrutura
 
 ```text
@@ -44,6 +64,7 @@ A implementação utiliza:
 ├── training/
 │   ├── checkpoint.py
 │   └── trainer.py
+├── evaluation.py
 ├── evaluate.py
 ├── play.py
 └── train.py
@@ -52,7 +73,7 @@ A implementação utiliza:
 ## 🚀 Instalação
 
 ```bash
-pip install torch pygame-ce gymnasium tensorboard matplotlib pytest pyyaml tqdm
+pip install -r requirements.txt
 ```
 
 ## ▶️ Treinamento
@@ -63,15 +84,13 @@ python train.py
 
 O treinador retoma automaticamente o `models/latest.pt` quando existe um checkpoint compatível.
 
-## 🎮 Avaliação
-
-Para executar o agente treinado:
+## 🎮 Visualização
 
 ```bash
 python play.py
 ```
 
-Para acompanhar métricas do treinamento:
+## 📈 TensorBoard
 
 ```bash
 tensorboard --logdir runs
@@ -80,12 +99,12 @@ tensorboard --logdir runs
 ## 🧪 Próximas evoluções
 
 - testes automatizados do ambiente e do agente;
-- avaliação quantitativa em episódios separados do treinamento;
-- comparação entre DQN e Double DQN;
+- gráfico automático dos resultados de avaliação;
+- comparação DQN vs. Double DQN usando o mesmo protocolo;
 - priorização de experiências no replay buffer;
 - exploração de **Dueling DQN**;
 - melhoria progressiva da função de recompensa;
-- gráficos de recompensa média, colisões e checkpoints por episódio.
+- avaliação de generalização em circuitos diferentes.
 
 ## 📄 Licença
 
